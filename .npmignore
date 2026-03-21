@@ -1,0 +1,25 @@
+﻿# Source
+src/
+examples/
+
+# Tests
+__tests__/
+*.test.ts
+jest.config.js
+
+# Config
+tsconfig.json
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Dev
+.github/
+.vscode/
+.idea/
+*.tgz
+
+# Docs (not needed in npm package)
+IMPLEMENTATION.md
+PHASE*.md
+SETUP.md
