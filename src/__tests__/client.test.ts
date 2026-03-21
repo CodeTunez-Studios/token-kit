@@ -47,7 +47,7 @@ describe('TokenKitClient', () => {
         timeout: 60000,
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': testConstants.apiKey,
+          'Authorization': `Bearer ${testConstants.apiKey}`,
         },
       });
     });

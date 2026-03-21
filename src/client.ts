@@ -32,7 +32,7 @@ export class TokenKitClient {
       timeout: config.timeout || 60000,
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': this.apiKey,
+        'Authorization': `Bearer ${this.apiKey}`,
       },
     });
 
