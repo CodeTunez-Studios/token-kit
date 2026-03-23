@@ -127,7 +127,7 @@ export class TokenKitAPIError extends Error implements TokenKitError {
 export interface TokenKitConfig {
   /** Developer API key */
   apiKey: string;
-  /** API Gateway base URL (default: https://api.token-kit.com) */
+  /** API Gateway base URL (default: https://api.token-kit.com/api/v1) */
   baseUrl?: string;
   /** Request timeout in milliseconds (default: 60000) */
   timeout?: number;
