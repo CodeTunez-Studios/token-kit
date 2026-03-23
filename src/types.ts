@@ -15,7 +15,7 @@ export interface Message {
 }
 
 export interface ChatOptions {
-  /** LLM model to use (default: 'gpt-3.5-turbo') */
+  /** LLM model to use (default: 'gpt-4o-mini') */
   model?: string;
   /** Maximum tokens in response (default: 500) */
   maxTokens?: number;

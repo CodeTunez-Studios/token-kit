@@ -90,7 +90,7 @@ describe('TokenKit', () => {
 
     it('should call client.chat with options', async () => {
       const options = {
-        model: 'gpt-4',
+        model: 'gpt-4o',
         maxTokens: 100,
         temperature: 0.8,
       };
@@ -124,7 +124,7 @@ describe('TokenKit', () => {
     });
 
     it('should use stored userToken with options', async () => {
-      const options = { model: 'gpt-4' };
+      const options = { model: 'gpt-4o' };
 
       await tokenKit.chat(messages, options);
 
@@ -218,7 +218,7 @@ describe('TokenKit', () => {
 
   describe('getModels()', () => {
     it('should call client.getModels', async () => {
-      const models = ['gpt-3.5-turbo', 'gpt-4'];
+      const models = ['gpt-4o-mini', 'gpt-4o'];
       mockClient.getModels.mockResolvedValue(models);
 
       const result = await tokenKit.getModels();

@@ -95,7 +95,7 @@ describe('TokenKitClient', () => {
       });
 
       const options = {
-        model: 'gpt-4',
+        model: 'gpt-4o',
         maxTokens: 100,
         temperature: 0.8,
       };
@@ -225,7 +225,7 @@ describe('TokenKitClient', () => {
 
   describe('getModels()', () => {
     it('should make GET request to /llm/models', async () => {
-      const models = ['gpt-3.5-turbo', 'gpt-4'];
+      const models = ['gpt-4o-mini', 'gpt-4o'];
       mockAxiosInstance.get.mockResolvedValue({
         data: mockFactory.apiResponse({ models }),
       });
@@ -236,7 +236,7 @@ describe('TokenKitClient', () => {
     });
 
     it('should return array of models on success', async () => {
-      const models = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'];
+      const models = ['gpt-4o-mini', 'gpt-4o', 'claude-sonnet-4'];
       mockAxiosInstance.get.mockResolvedValue({
         data: mockFactory.apiResponse({ models }),
       });

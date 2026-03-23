@@ -15,7 +15,7 @@ token-kit enables developers to integrate LLM features into their applications u
 
 - **Simple API** — Intuitive methods for chat completions
 - **TypeScript First** — Full type safety and IntelliSense support
-- **Multiple Models** — Support for GPT-3.5, GPT-4, GPT-4 Turbo (more coming)
+- **Multiple Models** — Support for Claude, GPT-4o, Amazon Nova (more coming)
 - **Token Management** — Built-in balance checking and validation
 - **Error Handling** — Comprehensive typed error classes
 - **Lightweight** — Single runtime dependency (axios)
@@ -79,7 +79,7 @@ const res = await tk.chat('user_token', [
   TokenKit.system('You are a helpful assistant.'),
   TokenKit.user('Explain quantum computing simply.'),
 ], {
-  model: 'gpt-4',
+  model: 'gpt-4o',
   maxTokens: 200,
   temperature: 0.8,
 });
@@ -89,7 +89,7 @@ const res = await tk.chat('user_token', [
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `model` | `string` | `gpt-3.5-turbo` | LLM model to use |
+| `model` | `string` | `gpt-4o-mini` | LLM model to use |
 | `maxTokens` | `number` | `500` | Max tokens in response |
 | `temperature` | `number` | `0.7` | Randomness (0–2) |
 
@@ -144,7 +144,7 @@ List available LLM models.
 
 ```typescript
 const models = await tk.getModels();
-// ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo']
+// ['gpt-4o-mini', 'gpt-4o', 'claude-3.5-haiku', 'claude-sonnet-4', 'nova-micro', 'nova-lite']
 ```
 
 ### Helper Methods
@@ -213,9 +213,12 @@ Different models consume tokens at different rates:
 
 | Model | Rate | 1,000 TK tokens = |
 |-------|------|-------------------|
-| GPT-3.5 Turbo | 1.0x | 1,000 LLM tokens |
-| GPT-4 Turbo | 2.0x | 500 LLM tokens |
-| GPT-4 | 3.0x | 333 LLM tokens |
+| GPT-4o Mini | 1.0x | 1,000 LLM tokens |
+| Claude 3.5 Haiku | 1.0x | 1,000 LLM tokens |
+| Amazon Nova Micro | 1.0x | 1,000 LLM tokens |
+| Amazon Nova Lite | 1.0x | 1,000 LLM tokens |
+| GPT-4o | 2.0x | 500 LLM tokens |
+| Claude Sonnet 4 | 3.0x | 333 LLM tokens |
 
 See [token-kit.com](https://token-kit.com) for current package pricing and details.
 

@@ -15,7 +15,7 @@ export const mockFactory = {
 
   chatResponse: (overrides?: Partial<ChatResponse>): ChatResponse => ({
     id: 'chat_test_123',
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o-mini',
     message: {
       role: 'assistant',
       content: 'This is a test response',

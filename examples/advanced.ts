@@ -33,7 +33,7 @@ async function main() {
         TokenKit.user('Explain how Token-Kit works in 2 sentences.'),
       ],
       {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         maxTokens: 150,
         temperature: 0.7,
       }

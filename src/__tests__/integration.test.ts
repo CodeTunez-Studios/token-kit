@@ -76,7 +76,7 @@ describe('ChatbotService Integration', () => {
       mockTokenKit.getBalance.mockResolvedValue(100);
       mockTokenKit.chat.mockResolvedValue({
         id: 'chat_123',
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         message: { role: 'assistant', content: 'Hello!' },
         tokensUsed: { prompt: 5, completion: 10, total: 15 },
         tokensDeducted: 15,
@@ -103,7 +103,7 @@ describe('ChatbotService Integration', () => {
       mockTokenKit.getBalance.mockResolvedValue(100);
       mockTokenKit.chat.mockResolvedValue({
         id: 'chat_123',
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         message: { role: 'assistant', content: 'Hello!' },
         tokensUsed: { prompt: 5, completion: 10, total: 15 },
         tokensDeducted: 15,
@@ -122,7 +122,7 @@ describe('ChatbotService Integration', () => {
       mockTokenKit.getBalance.mockResolvedValue(100);
       mockTokenKit.chat.mockResolvedValue({
         id: 'chat_123',
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         message: { role: 'assistant', content: 'Hello! How can I help?' },
         tokensUsed: { prompt: 5, completion: 10, total: 15 },
         tokensDeducted: 15,

@@ -82,7 +82,7 @@ export class TokenKit {
    *   { role: 'system', content: 'You are a helpful assistant.' },
    *   { role: 'user', content: 'Hello!' }
    * ], {
-   *   model: 'gpt-4',
+   *   model: 'gpt-4o',
    *   maxTokens: 200,
    *   temperature: 0.8
    * });
@@ -165,9 +165,9 @@ export class TokenKit {
    * 
    * @example
    * ```typescript
-   * const models = await tokenKit.getModels();
+   * const response = await tokenKit.getModels();
    * console.log('Available models:', models);
-   * // ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo']
+   * // ['claude-3.5-haiku', 'claude-sonnet-4', 'nova-micro', 'nova-lite', 'gpt-4o', 'gpt-4o-mini']
    * ```
    */
   async getModels(): Promise<string[]> {
