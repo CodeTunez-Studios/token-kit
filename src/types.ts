@@ -124,10 +124,34 @@ export class TokenKitAPIError extends Error implements TokenKitError {
 // SDK Configuration
 // ============================================================================
 
+/**
+ * Named deployment environments.
+ * Maps to the canonical API Gateway URLs for each environment.
+ * Use `baseUrl` to override for self-hosted or custom deployments.
+ */
+export type TokenKitEnvironment = 'production' | 'staging' | 'development';
+
+/** Canonical base URLs per environment — exported for reference */
+export const ENVIRONMENT_URLS: Record<TokenKitEnvironment, string> = {
+  production:  'https://api.token-kit.com/v1',
+  staging:     'https://api-staging.token-kit.com/v1',
+  development: 'https://api-dev.token-kit.com/v1',
+};
+
 export interface TokenKitConfig {
   /** Developer API key */
   apiKey: string;
-  /** API Gateway base URL (default: https://api.token-kit.com/api/v1) */
+  /**
+   * Named environment shorthand. Resolves to the canonical API URL.
+   * Ignored when `baseUrl` is also provided (baseUrl takes precedence).
+   * Defaults to `'production'` when neither is set.
+   */
+  environment?: TokenKitEnvironment;
+  /**
+   * Explicit API Gateway base URL.
+   * Use this for self-hosted deployments or local development.
+   * Takes precedence over `environment`.
+   */
   baseUrl?: string;
   /** Request timeout in milliseconds (default: 60000) */
   timeout?: number;

@@ -6,6 +6,8 @@
 import { TokenKitClient } from './client';
 import {
   TokenKitConfig,
+  TokenKitEnvironment,
+  ENVIRONMENT_URLS,
   Message,
   ChatOptions,
   ChatResponse,
@@ -39,7 +41,11 @@ export class TokenKit {
    * 
    * @param config - Configuration options
    * @param config.apiKey - Your developer API key
-   * @param config.baseUrl - API base URL (optional, defaults to production)
+   * @param config.environment - Target environment: 'production' | 'staging' | 'development'
+   *   Resolves to the canonical API URL for that environment.
+   *   Defaults to 'production'. Ignored when `baseUrl` is also set.
+   * @param config.baseUrl - Explicit API base URL — overrides `environment`.
+   *   Use for self-hosted deployments or local tunnels.
    * @param config.timeout - Request timeout in ms (optional, defaults to 60000)
    */
   constructor(config: TokenKitConfig) {
@@ -208,6 +214,7 @@ export class TokenKit {
 // Re-export types for convenience
 export type {
   TokenKitConfig,
+  TokenKitEnvironment,
   Message,
   MessageRole,
   ChatOptions,
@@ -217,7 +224,7 @@ export type {
   ModelsResponse,
 };
 
-export { TokenKitAPIError };
+export { TokenKitAPIError, ENVIRONMENT_URLS };
 
 // Default export
 export default TokenKit;

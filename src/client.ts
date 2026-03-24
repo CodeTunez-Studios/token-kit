@@ -13,6 +13,7 @@ import {
   ModelsResponse,
   Message,
   ChatOptions,
+  ENVIRONMENT_URLS,
 } from './types';
 
 export class TokenKitClient {
@@ -26,9 +27,14 @@ export class TokenKitClient {
 
     this.apiKey = config.apiKey;
 
+    // Resolve base URL: explicit baseUrl > environment shorthand > production default
+    const baseURL =
+      config.baseUrl ??
+      ENVIRONMENT_URLS[config.environment ?? 'production'];
+
     // Create axios instance
     this.client = axios.create({
-      baseURL: config.baseUrl || 'https://api.token-kit.com/v1',
+      baseURL,
       timeout: config.timeout || 60000,
       headers: {
         'Content-Type': 'application/json',
