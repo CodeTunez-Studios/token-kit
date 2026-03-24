@@ -28,7 +28,7 @@ export class TokenKitClient {
 
     // Create axios instance
     this.client = axios.create({
-      baseURL: config.baseUrl || 'https://api.token-kit.com/api/v1',
+      baseURL: config.baseUrl || 'https://api.token-kit.com/v1',
       timeout: config.timeout || 60000,
       headers: {
         'Content-Type': 'application/json',
