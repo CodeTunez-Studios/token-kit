@@ -7,9 +7,11 @@
 
 > **Beta** — This SDK is under active development. APIs may change before 1.0.
 
-Official TypeScript/JavaScript SDK for [token-kit](https://token-kit.com) — the AI token infrastructure platform for developers.
+Official TypeScript/JavaScript SDK for [token-kit](https://token-kit.com) — an AI billing and metering platform for developers.
 
-token-kit enables developers to integrate LLM features into their applications using an end-user-funded token model. Users purchase tokens, developers consume them for AI operations.
+token-kit enables developers to integrate LLM features with prepaid user-funded credits, spend controls, and cost visibility. It is especially useful for indie developers and small teams that want AI monetization without taking uncapped provider risk.
+
+If your users already bring their own OpenAI or Anthropic keys, that can still be a valid approach. token-kit is best when you want one billing, routing, and control layer without exposing provider key management to end-users.
 
 ## Features
 
