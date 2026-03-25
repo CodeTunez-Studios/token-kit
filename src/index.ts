@@ -226,5 +226,14 @@ export type {
 
 export { TokenKitAPIError, ENVIRONMENT_URLS };
 
+// Connect helper (Phase 2 — browser-only)
+export {
+  connectViaPortal,
+  getStoredUserToken,
+  clearStoredUserToken,
+  TokenKitConnectCancelledError,
+} from './connect';
+export type { ConnectViaPortalOptions } from './connect';
+
 // Default export
 export default TokenKit;
