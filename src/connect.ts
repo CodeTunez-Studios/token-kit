@@ -12,7 +12,7 @@
  * ```typescript
  * import { connectViaPortal } from '@codetunezstudios/token-kit';
  *
- * const userToken = await connectViaPortal({ appId: 'dev_abc123...' });
+ * const userToken = await connectViaPortal({ clientId: 'app_abc123...' });
  * tokenKit.setUserToken(userToken);
  * ```
  */
@@ -20,8 +20,8 @@
 // ── Types ─────────────────────────────────────────────────────────────────
 
 export interface ConnectViaPortalOptions {
-  /** The developerId of the requesting app (shown in admin CLI output). */
-  appId: string;
+  /** The clientId of the developer app (created in the token-kit.com Apps dashboard). */
+  clientId: string;
   /**
    * Base URL of the Token-Kit portal.
    * Defaults to 'https://ai-tokens.me'.
@@ -34,7 +34,7 @@ export interface ConnectViaPortalOptions {
 interface TokenKitConnectMessage {
   type: 'TOKEN_KIT_TOKEN';
   token: string;
-  appId: string;
+  clientId: string;
 }
 
 // ── Error ─────────────────────────────────────────────────────────────────
@@ -73,7 +73,7 @@ const STORAGE_KEY = 'tokenkit_user_token';
 export async function connectViaPortal(options: ConnectViaPortalOptions): Promise<string> {
   const portalUrl = (options.portalUrl ?? 'https://ai-tokens.me').replace(/\/$/, '');
   const currentOrigin = encodeURIComponent(window.location.origin);
-  const url = `${portalUrl}/connect?appId=${encodeURIComponent(options.appId)}&origin=${currentOrigin}`;
+  const url = `${portalUrl}/connect?clientId=${encodeURIComponent(options.clientId)}&origin=${currentOrigin}`;
 
   const popup = window.open(
     url,
