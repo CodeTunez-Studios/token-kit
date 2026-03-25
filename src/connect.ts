@@ -73,7 +73,9 @@ const STORAGE_KEY = 'tokenkit_user_token';
 export async function connectViaPortal(options: ConnectViaPortalOptions): Promise<string> {
   const portalUrl = (options.portalUrl ?? 'https://ai-tokens.me').replace(/\/$/, '');
   const currentOrigin = encodeURIComponent(window.location.origin);
-  const url = `${portalUrl}/connect?clientId=${encodeURIComponent(options.clientId)}&origin=${currentOrigin}`;
+  const existingToken = getStoredUserToken();
+  const reconnectParam = existingToken ? '&reconnect=true' : '';
+  const url = `${portalUrl}/connect?clientId=${encodeURIComponent(options.clientId)}&origin=${currentOrigin}${reconnectParam}`;
 
   const popup = window.open(
     url,
