@@ -51,7 +51,7 @@ export class TokenKitConnectCancelledError extends Error {
   }
 }
 
-// ── localStorage key ──────────────────────────────────────────────────────
+// ── sessionStorage key ──────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'tokenkit_user_token';
 
@@ -61,10 +61,10 @@ const STORAGE_KEY = 'tokenkit_user_token';
  * Open a Token-Kit portal popup to acquire a user token via postMessage.
  *
  * Flow:
- *  1. Opens `${portalUrl}/connect?appId=...&origin=...` as a 480×640 popup
+ *  1. Opens `${portalUrl}/connect?clientId=...&origin=...` as a 480×640 popup
  *  2. Listens for `message` events filtered to the portal origin and
  *     `type === 'TOKEN_KIT_TOKEN'`
- *  3. On receipt: stores token in localStorage, resolves with the token string
+ *  3. On receipt: validates clientId matches, stores token in sessionStorage, resolves with the token string
  *  4. If popup is closed without a message: rejects with TokenKitConnectCancelledError
  *
  * @param options - Connection options
@@ -73,9 +73,7 @@ const STORAGE_KEY = 'tokenkit_user_token';
 export async function connectViaPortal(options: ConnectViaPortalOptions): Promise<string> {
   const portalUrl = (options.portalUrl ?? 'https://ai-tokens.me').replace(/\/$/, '');
   const currentOrigin = encodeURIComponent(window.location.origin);
-  const existingToken = getStoredUserToken();
-  const reconnectParam = existingToken ? '&reconnect=true' : '';
-  const url = `${portalUrl}/connect?clientId=${encodeURIComponent(options.clientId)}&origin=${currentOrigin}${reconnectParam}`;
+  const url = `${portalUrl}/connect?clientId=${encodeURIComponent(options.clientId)}&origin=${currentOrigin}`;
 
   const popup = window.open(
     url,
@@ -101,8 +99,11 @@ export async function connectViaPortal(options: ConnectViaPortalOptions): Promis
         return;
       }
 
+      // MEDIUM-2 fix: validate clientId matches what was requested
+      if (data.clientId !== options.clientId) return;
+
       cleanup();
-      localStorage.setItem(STORAGE_KEY, data.token);
+      sessionStorage.setItem(STORAGE_KEY, data.token);
       resolve(data.token);
     }
 
@@ -129,7 +130,7 @@ export async function connectViaPortal(options: ConnectViaPortalOptions): Promis
  */
 export function getStoredUserToken(): string | null {
   try {
-    return localStorage.getItem(STORAGE_KEY);
+    return sessionStorage.getItem(STORAGE_KEY);
   } catch {
     return null;
   }
@@ -141,8 +142,8 @@ export function getStoredUserToken(): string | null {
  */
 export function clearStoredUserToken(): void {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
   } catch {
-    // ignore — localStorage unavailable in some environments
+    // ignore — sessionStorage unavailable in some environments
   }
 }
