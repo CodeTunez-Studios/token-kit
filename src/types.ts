@@ -142,6 +142,11 @@ export interface TokenKitConfig {
   /** Developer API key */
   apiKey: string;
   /**
+   * Client ID of your registered app.
+   * Required for app-bound tokens. Create apps in the Token-Kit developer portal.
+   */
+  clientId: string;
+  /**
    * Named environment shorthand. Resolves to the canonical API URL.
    * Ignored when `baseUrl` is also provided (baseUrl takes precedence).
    * Defaults to `'production'` when neither is set.

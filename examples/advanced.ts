@@ -8,6 +8,7 @@ import TokenKit, { TokenKitAPIError } from '@codetunezstudios/token-kit';
 async function main() {
   const tokenKit = new TokenKit({
     apiKey: process.env.TOKENKIT_API_KEY!,
+    clientId: process.env.TOKENKIT_CLIENT_ID!,
     // For development, use local API Gateway
     // baseUrl: 'http://localhost:3000/api/v1',
   });

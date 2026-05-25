@@ -41,9 +41,10 @@ pnpm add @codetunezstudios/token-kit
 ```typescript
 import TokenKit from '@codetunezstudios/token-kit';
 
-// Initialize with your developer API key
+// Initialize with your developer API key and client ID
 const tk = new TokenKit({
   apiKey: process.env.TOKENKIT_API_KEY!,
+  clientId: process.env.TOKENKIT_CLIENT_ID!, // Your app's client ID (required)
 });
 
 // Make a chat request
@@ -56,6 +57,59 @@ console.log('Tokens used:', res.tokensDeducted);
 console.log('Balance:', res.userBalance);
 ```
 
+## Getting Your Client ID
+
+1. Log into the [Token-Kit Developer Portal](https://token-kit.com)
+2. Navigate to **Apps** → **Create New App**
+3. Enter your app name and allowed origins
+4. Copy the generated `clientId`
+
+**Why use a client ID?**
+- Tracks usage per app in analytics
+- Enables per-app rate limiting
+- Required for user token connections
+
+## Browser-Based User Token Flow
+
+For browser apps, users can connect and authorize their token through the [ai-tokens.me](https://ai-tokens.me) portal:
+
+```typescript
+import { connectViaPortal, TokenKitTokenExistsError } from '@codetunezstudios/token-kit';
+
+// Open portal for user to authorize your app
+try {
+  const result = await connectViaPortal({
+    clientId: 'app_xxxxxxxx_your_client_id',
+    portalUrl: 'https://ai-tokens.me', // optional
+  });
+
+  if (result.isNewToken && result.token) {
+    // New user - token created successfully
+    console.log('Token:', result.token);
+    localStorage.setItem('user_token', result.token);
+    
+  } else if (result.existingTokenPrefix) {
+    // Returning user - already has a token
+    console.log('You already have an active token!');
+    console.log('Token starts with:', result.existingTokenPrefix);
+    console.log('Retrieve it from: https://ai-tokens.me/dashboard');
+    
+    // Prompt user to enter their existing token
+    const token = prompt('Enter your token:');
+    if (token) localStorage.setItem('user_token', token);
+  }
+  
+} catch (err) {
+  if (err instanceof TokenKitTokenExistsError) {
+    console.error('Token exists:', err.tokenPrefix);
+  }
+}
+```
+
+**Important:** Users get **one global token** for all apps. Once created, they must use the same token across all authorized apps. If a user loses their token, they can rotate it from the dashboard.
+
+See [examples/connect-flow.ts](examples/connect-flow.ts) for complete integration patterns.
+
 ## API Reference
 
 ### Constructor
@@ -67,7 +121,9 @@ const tk = new TokenKit(config);
 | Option | Type | Required | Default | Description |
 |--------|------|----------|---------|-------------|
 | `apiKey` | `string` | Yes | — | Developer API key |
-| `baseUrl` | `string` | No | `https://api.token-kit.com/api/v1` | API base URL |
+| `clientId` | `string` | Yes | — | Your app's client ID |
+| `environment` | `'production'\| 'staging' \| 'development'` | No | `'production'` | Target environment |
+| `baseUrl` | `string` | No | — | Custom API base URL (overrides environment) |
 | `timeout` | `number` | No | `60000` | Request timeout (ms) |
 
 ### Methods
@@ -149,6 +205,48 @@ const models = await tk.getModels();
 // ['gpt-4o-mini', 'gpt-4o', 'claude-3.5-haiku', 'claude-sonnet-4', 'nova-micro', 'nova-lite']
 ```
 
+#### `connectViaPortal(options)` (Browser Only)
+
+Open the user portal for token authorization. Returns a `ConnectResult` object.
+
+```typescript
+import { connectViaPortal } from '@codetunezstudios/token-kit';
+
+const result = await connectViaPortal({
+  clientId: 'app_xxxxxxxx',
+  portalUrl: 'https://ai-tokens.me', // optional
+});
+```
+
+**Options:**
+
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `clientId` | `string` | Yes | — | Your app's client ID |
+| `portalUrl` | `string` | No | `'https://ai-tokens.me'` | Portal URL |
+
+**Returns** `ConnectResult`:
+
+```typescript
+{
+  token?: string;               // User token (only for new tokens)
+  isNewToken: boolean;          // true if token was just created
+  existingTokenPrefix?: string; // First 10 chars if token already exists
+  errorCode?: string;           // Error code if connection failed
+  errorMessage?: string;        // Error message if failed
+}
+```
+
+**Scenarios:**
+
+1. **New user** → `isNewToken: true`, `token` contains the new token
+2. **Returning user** → `existingTokenPrefix` is set, user must retrieve token from dashboard
+3. **Error** → `errorCode` and `errorMessage` are set
+
+**Throws:**
+- `TokenKitConnectCancelledError` — User closed the portal window
+- `TokenKitTokenExistsError` — Token already exists (includes `tokenPrefix`)
+
 ### Helper Methods
 
 ```typescript
@@ -160,7 +258,11 @@ TokenKit.assistant('message')  // { role: 'assistant', content: 'message' }
 ## Error Handling
 
 ```typescript
-import TokenKit, { TokenKitAPIError } from '@codetunezstudios/token-kit';
+import TokenKit, { 
+  TokenKitAPIError, 
+  TokenKitTokenExistsError,
+  TokenKitConnectCancelledError 
+} from '@codetunezstudios/token-kit';
 
 try {
   const res = await tk.chat(userToken, messages);
@@ -173,7 +275,7 @@ try {
 }
 ```
 
-**Error codes:**
+**API Error codes:**
 
 | Code | Status | Description |
 |------|--------|-------------|
@@ -187,6 +289,13 @@ try {
 | `TIMEOUT` | 504 | Request timed out |
 | `NETWORK_ERROR` | 503 | Cannot reach token-kit API |
 
+**Browser Connect errors:**
+
+| Error | Description |
+|-------|-------------|
+| `TokenKitConnectCancelledError` | User closed the portal window before completing authorization |
+| `TokenKitTokenExistsError` | User already has an active token (includes `tokenPrefix` property) |
+
 ## Express Integration Example
 
 ```typescript
@@ -194,7 +303,10 @@ import express from 'express';
 import TokenKit from '@codetunezstudios/token-kit';
 
 const app = express();
-const tk = new TokenKit({ apiKey: process.env.TOKENKIT_API_KEY! });
+const tk = new TokenKit({
+  apiKey: process.env.TOKENKIT_API_KEY!,
+  clientId: process.env.TOKENKIT_CLIENT_ID!,
+});
 
 app.post('/api/chat', async (req, res) => {
   try {

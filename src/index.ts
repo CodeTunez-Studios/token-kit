@@ -23,7 +23,10 @@ import {
  * 
  * Example usage:
  * ```typescript
- * const tokenKit = new TokenKit({ apiKey: 'your-api-key' });
+ * const tokenKit = new TokenKit({ 
+ *   apiKey: 'your-api-key',
+ *   clientId: 'your-client-id'
+ * });
  * 
  * const response = await tokenKit.chat('user-token', [
  *   { role: 'user', content: 'Hello!' }
@@ -41,6 +44,7 @@ export class TokenKit {
    * 
    * @param config - Configuration options
    * @param config.apiKey - Your developer API key
+   * @param config.clientId - Your app's client ID
    * @param config.environment - Target environment: 'production' | 'staging' | 'development'
    *   Resolves to the canonical API URL for that environment.
    *   Defaults to 'production'. Ignored when `baseUrl` is also set.
@@ -232,8 +236,9 @@ export {
   getStoredUserToken,
   clearStoredUserToken,
   TokenKitConnectCancelledError,
+  TokenKitTokenExistsError,
 } from './connect';
-export type { ConnectViaPortalOptions } from './connect';
+export type { ConnectViaPortalOptions, ConnectResult } from './connect';
 
 // Default export
 export default TokenKit;

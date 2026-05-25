@@ -9,6 +9,7 @@ async function main() {
   // Initialize TokenKit with your API key
   const tokenKit = new TokenKit({
     apiKey: 'dev_xxxxxxxx_your_api_key_here',
+    clientId: 'app_xxxxxxxx_your_client_id_here',
   });
 
   // User token (provided by your end user)

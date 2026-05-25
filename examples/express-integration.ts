@@ -12,6 +12,7 @@ app.use(express.json());
 // Initialize TokenKit
 const tokenKit = new TokenKit({
   apiKey: process.env.TOKENKIT_API_KEY!,
+  clientId: process.env.TOKENKIT_CLIENT_ID!,
 });
 
 // Endpoint for chatbot

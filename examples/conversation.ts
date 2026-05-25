@@ -9,6 +9,7 @@ import { Message } from '@codetunezstudios/token-kit';
 async function main() {
   const tokenKit = new TokenKit({
     apiKey: process.env.TOKENKIT_API_KEY!,
+    clientId: process.env.TOKENKIT_CLIENT_ID!,
   });
 
   const userToken = process.env.TOKENKIT_USER_TOKEN!;

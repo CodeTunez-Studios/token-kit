@@ -19,13 +19,18 @@ import {
 export class TokenKitClient {
   private client: AxiosInstance;
   private apiKey: string;
+  private clientId: string;
 
   constructor(config: TokenKitConfig) {
     if (!config.apiKey) {
       throw new Error('API key is required');
     }
+    if (!config.clientId) {
+      throw new Error('Client ID is required');
+    }
 
     this.apiKey = config.apiKey;
+    this.clientId = config.clientId;
 
     // Resolve base URL: explicit baseUrl > environment shorthand > production default
     const baseURL =
@@ -39,6 +44,7 @@ export class TokenKitClient {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`,
+        'X-Client-Id': this.clientId,
       },
     });
 

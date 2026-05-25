@@ -36,6 +36,7 @@ describe('TokenKitClient', () => {
     // Create client
     client = new TokenKitClient({
       apiKey: testConstants.apiKey,
+      clientId: testConstants.clientId,
       baseUrl: testConstants.baseUrl,
     });
   });
@@ -48,6 +49,7 @@ describe('TokenKitClient', () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${testConstants.apiKey}`,
+          'X-Client-Id': testConstants.clientId,
         },
       });
     });
@@ -55,6 +57,7 @@ describe('TokenKitClient', () => {
     it('should use custom timeout if provided', () => {
       new TokenKitClient({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
         timeout: 30000,
       });
 

@@ -69,6 +69,7 @@ export const mockFactory = {
  */
 export const testConstants = {
   apiKey: 'dev_test_api_key_123',
+  clientId: 'app_test_client_id_123',
   userToken: 'ut_test_user_token_123',
   baseUrl: 'https://api.token-kit.com/api/v1',
 };

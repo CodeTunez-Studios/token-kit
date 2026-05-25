@@ -66,10 +66,10 @@ afterEach(() => {
 
 describe('connectViaPortal', () => {
   it('opens a popup with the correct URL', async () => {
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     expect(openMock).toHaveBeenCalledWith(
-      expect.stringContaining(`/connect?appId=${encodeURIComponent(APP_ID)}`),
+      expect.stringContaining(`/connect?clientId=${encodeURIComponent(APP_ID)}`),
       'tokenkit-connect',
       expect.any(String)
     );
@@ -77,51 +77,63 @@ describe('connectViaPortal', () => {
     // Resolve immediately to avoid test hanging
     const event = new MessageEvent('message', {
       origin: PORTAL_URL,
-      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(event));
 
-    await expect(promise).resolves.toBe(TOKEN);
+    const result = await promise;
+    expect(result).toMatchObject({
+      isNewToken: true,
+      token: TOKEN,
+    });
   });
 
   it('resolves with token when a valid TOKEN_KIT_TOKEN message is received', async () => {
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     const event = new MessageEvent('message', {
       origin: PORTAL_URL,
-      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(event));
 
-    await expect(promise).resolves.toBe(TOKEN);
+    const result = await promise;
+    expect(result).toMatchObject({
+      isNewToken: true,
+      token: TOKEN,
+    });
     expect(localStorageSetSpy).toHaveBeenCalledWith('tokenkit_user_token', TOKEN);
   });
 
   it('ignores messages from unexpected origins', async () => {
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     // Wrong origin — should be ignored
     const wrongOriginEvent = new MessageEvent('message', {
       origin: 'https://evil.example.com',
-      data: { type: 'TOKEN_KIT_TOKEN', token: 'stolen', appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: 'stolen', clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(wrongOriginEvent));
 
     // Correct origin — should resolve
     const goodEvent = new MessageEvent('message', {
       origin: PORTAL_URL,
-      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(goodEvent));
 
-    await expect(promise).resolves.toBe(TOKEN);
+    const result = await promise;
+    expect(result).toMatchObject({
+      isNewToken: true,
+      token: TOKEN,
+    });
     // Only the legitimate token should be stored
     expect(localStorageSetSpy).toHaveBeenCalledWith('tokenkit_user_token', TOKEN);
     expect(localStorageSetSpy).not.toHaveBeenCalledWith('tokenkit_user_token', 'stolen');
   });
 
   it('ignores messages with wrong type', async () => {
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     const wrongTypeEvent = new MessageEvent('message', {
       origin: PORTAL_URL,
@@ -132,18 +144,22 @@ describe('connectViaPortal', () => {
     // Now send the correct message
     const goodEvent = new MessageEvent('message', {
       origin: PORTAL_URL,
-      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(goodEvent));
 
-    await expect(promise).resolves.toBe(TOKEN);
+    const result = await promise;
+    expect(result).toMatchObject({
+      isNewToken: true,
+      token: TOKEN,
+    });
   });
 
   it('rejects with TokenKitConnectCancelledError when popup is closed without confirming', async () => {
     const popup = makePopupMock(false);
     openMock.mockReturnValue(popup as unknown as Window);
 
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     // Simulate user closing the popup
     popup.closed = true;
@@ -159,16 +175,16 @@ describe('connectViaPortal', () => {
     openMock.mockReturnValue(null);
 
     await expect(
-      connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL })
+      connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL })
     ).rejects.toThrow('Failed to open Token-Kit connect popup');
   });
 
   it('removes the message event listener after resolving', async () => {
-    const promise = connectViaPortal({ appId: APP_ID, portalUrl: PORTAL_URL });
+    const promise = connectViaPortal({ clientId: APP_ID, portalUrl: PORTAL_URL });
 
     const event = new MessageEvent('message', {
       origin: PORTAL_URL,
-      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, appId: APP_ID },
+      data: { type: 'TOKEN_KIT_TOKEN', token: TOKEN, clientId: APP_ID },
     });
     messageListeners.forEach((l) => l(event));
     await promise;

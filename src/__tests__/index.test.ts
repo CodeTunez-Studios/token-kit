@@ -30,6 +30,7 @@ describe('TokenKit', () => {
     // Create TokenKit instance
     tokenKit = new TokenKit({
       apiKey: testConstants.apiKey,
+      clientId: testConstants.clientId,
     });
   });
 
@@ -37,17 +38,20 @@ describe('TokenKit', () => {
     it('should create TokenKitClient with config', () => {
       expect(MockedTokenKitClient).toHaveBeenCalledWith({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
       });
     });
 
     it('should pass baseUrl to client if provided', () => {
       new TokenKit({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
         baseUrl: 'http://localhost:3000',
       });
 
       expect(MockedTokenKitClient).toHaveBeenCalledWith({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
         baseUrl: 'http://localhost:3000',
       });
     });
@@ -55,11 +59,13 @@ describe('TokenKit', () => {
     it('should pass timeout to client if provided', () => {
       new TokenKit({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
         timeout: 30000,
       });
 
       expect(MockedTokenKitClient).toHaveBeenCalledWith({
         apiKey: testConstants.apiKey,
+        clientId: testConstants.clientId,
         timeout: 30000,
       });
     });
@@ -132,7 +138,7 @@ describe('TokenKit', () => {
     });
 
     it('should throw error if userToken not set', async () => {
-      const freshTokenKit = new TokenKit({ apiKey: testConstants.apiKey });
+      const freshTokenKit = new TokenKit({ apiKey: testConstants.apiKey, clientId: testConstants.clientId });
 
       await expect(freshTokenKit.chat(messages)).rejects.toThrow(
         'User token not set. Call setUserToken() first or pass userToken to chat().'
